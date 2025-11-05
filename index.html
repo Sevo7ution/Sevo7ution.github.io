@@ -12,35 +12,54 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      color: #fff;
-      font-family: Arial, Helvetica, sans-serif;
-      font-size: 35vh; /* 占页面约 35% 高度 */
-      font-weight: bold;
+      overflow: hidden;
+    }
+
+    .container {
       text-align: center;
-      animation: fadeIn 2s ease-out, glow 3s ease-in-out infinite alternate;
-      transition: all 0.6s ease;
+      color: #fff;
+      font-family: "Arial Black", "Helvetica Neue", Helvetica, sans-serif;
+      animation: fadeIn 1.5s ease-out;
+      transition: transform 0.2s ease-out;
       user-select: none;
-      cursor: default;
+      will-change: transform;
+    }
+
+    .title {
+      font-size: 17vh;
+      font-weight: 900;
+      text-transform: uppercase;
+      margin: 0;
+    }
+
+    .subtitle {
+      font-size: 3vh;
+      font-weight: normal;
+      margin-top: 3vh; /* 与上一行间隔 */
+      letter-spacing: 1px;
     }
 
     @keyframes fadeIn {
       from { opacity: 0; transform: scale(0.9); }
       to { opacity: 1; transform: scale(1); }
     }
-
-    @keyframes glow {
-      from { text-shadow: 0 0 10px #fff; opacity: 0.95; }
-      to { text-shadow: 0 0 30px #8EDCFC, 0 0 60px #8EDCFC; opacity: 1; }
-    }
-
-    body:hover {
-      text-shadow: 0 0 40px #8EDCFC, 0 0 80px #8EDCFC, 0 0 120px #8EDCFC;
-      transform: scale(1.05) rotate(1.5deg);
-      transition: all 0.8s ease;
-    }
   </style>
 </head>
 <body>
-  nuc7ear
+  <div class="container" id="text">
+    <div class="title">NUC7EAR</div>
+    <div class="subtitle">网站建设中...</div>
+  </div>
+
+  <script>
+    const text = document.getElementById('text');
+    const moveStrength = 30; // 控制最大位移幅度（像素）
+
+    document.addEventListener('mousemove', e => {
+      const xMove = (e.clientX / window.innerWidth - 0.5) * moveStrength;
+      const yMove = (e.clientY / window.innerHeight - 0.5) * moveStrength;
+      text.style.transform = `translate(${xMove}px, ${yMove}px)`;
+    });
+  </script>
 </body>
 </html>
