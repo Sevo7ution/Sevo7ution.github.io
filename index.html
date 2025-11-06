@@ -23,20 +23,23 @@
       transition: transform 0.2s ease-out;
       user-select: none;
       will-change: transform;
+      padding: 0 5vw; /* 防止小屏幕文字太贴边 */
     }
 
     .title {
-      font-size: 17vh;
+      font-size: clamp(6vh, 10vw, 17vh); /* 自动适配不同屏幕 */
       font-weight: 900;
       text-transform: uppercase;
       margin: 0;
+      line-height: 1;
     }
 
     .subtitle {
-      font-size: 3vh;
+      font-size: clamp(2vh, 3vw, 3vh);
       font-weight: normal;
-      margin-top: 3vh; /* 与上一行间隔 */
+      margin-top: 3vh;
       letter-spacing: 1px;
+      line-height: 1.5;
     }
 
     @keyframes fadeIn {
@@ -55,11 +58,16 @@
     const text = document.getElementById('text');
     const moveStrength = 30; // 控制最大位移幅度（像素）
 
-    document.addEventListener('mousemove', e => {
+    function handleMove(e) {
       const xMove = (e.clientX / window.innerWidth - 0.5) * moveStrength;
       const yMove = (e.clientY / window.innerHeight - 0.5) * moveStrength;
       text.style.transform = `translate(${xMove}px, ${yMove}px)`;
-    });
+    }
+
+    // 仅在桌面端启用鼠标跟随
+    if (window.innerWidth > 768) {
+      document.addEventListener('mousemove', handleMove);
+    }
   </script>
 </body>
 </html>
