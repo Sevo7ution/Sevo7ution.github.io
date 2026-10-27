@@ -1,73 +1,91 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#000000">
   <title>nuc7ear</title>
+  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
   <style>
-    body {
-      margin: 0;
-      background-color: #000;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    html, body { margin: 0; min-height: 100%; }
+    body { background: #000; color: #fff; }
+    main {
+      min-height: 100vh;
+      min-height: 100svh;
+      display: grid;
+      place-items: center;
       overflow: hidden;
     }
-
     .container {
+      padding: 2rem 5vw;
       text-align: center;
-      color: #fff;
-      font-family: "Arial Black", "Helvetica Neue", Helvetica, sans-serif;
-      animation: fadeIn 1.5s ease-out;
-      transition: transform 0.2s ease-out;
-      user-select: none;
-      will-change: transform;
-      padding: 0 5vw; /* 防止小屏幕文字太贴边 */
+      transform: translate(var(--x, 0px), var(--y, 0px));
+      transition: transform 250ms ease-out;
+      animation: fade-in 1s ease-out both;
     }
-
-    .title {
-      font-size: clamp(6vh, 10vw, 17vh); /* 自动适配不同屏幕 */
-      font-weight: 900;
-      text-transform: uppercase;
+    h1 {
       margin: 0;
-      line-height: 1;
+      font: 900 clamp(2.6rem, 12vw, 9rem)/1 "Arial Black", "Helvetica Neue", Arial, sans-serif;
+      letter-spacing: -.06em;
     }
-
-    .subtitle {
-      font-size: clamp(2vh, 3vw, 3vh);
-      font-weight: normal;
-      margin-top: 3vh;
-      letter-spacing: 1px;
-      line-height: 1.5;
+    #name {
+      border: 0;
+      padding: 0;
+      background: none;
+      color: inherit;
+      font: inherit;
+      letter-spacing: inherit;
+      cursor: pointer;
     }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.9); }
-      to { opacity: 1; transform: scale(1); }
+    #name:focus-visible { outline: 2px solid #c6f602; outline-offset: 8px; }
+    #intro {
+      margin: 1.5rem 1rem 0;
+      font: 400 clamp(.9rem, 2.5vw, 1.2rem)/1.5 Arial, sans-serif;
+      letter-spacing: .06em;
+    }
+    @keyframes fade-in {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .container { transform: none; transition: none; animation: none; }
     }
   </style>
 </head>
 <body>
-  <div class="container" id="text">
-    <div class="title">NUC7EAR</div>
-    <div class="subtitle">网站建设中...</div>
-  </div>
-
+  <main id="hero">
+    <div class="container" id="text">
+      <h1><button id="name" type="button" aria-expanded="false" aria-controls="intro">nuc7ear</button></h1>
+      <p id="intro" hidden>3D · CAD · 视觉设计</p>
+    </div>
+  </main>
   <script>
-    const text = document.getElementById('text');
-    const moveStrength = 30; // 控制最大位移幅度（像素）
+    const hero = document.querySelector("#hero");
+    const text = document.querySelector("#text");
+    const nameButton = document.querySelector("#name");
+    const intro = document.querySelector("#intro");
+    const canMove = matchMedia("(hover: hover) and (pointer: fine)");
+    const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
 
-    function handleMove(e) {
-      const xMove = (e.clientX / window.innerWidth - 0.5) * moveStrength;
-      const yMove = (e.clientY / window.innerHeight - 0.5) * moveStrength;
-      text.style.transform = `translate(${xMove}px, ${yMove}px)`;
+    function resetPosition() {
+      text.style.removeProperty("--x");
+      text.style.removeProperty("--y");
     }
 
-    // 仅在桌面端启用鼠标跟随
-    if (window.innerWidth > 768) {
-      document.addEventListener('mousemove', handleMove);
-    }
+    hero.addEventListener("pointermove", (event) => {
+      if (!canMove.matches || reducedMotion.matches) return;
+      const rect = hero.getBoundingClientRect();
+      text.style.setProperty("--x", ((event.clientX - rect.left) / rect.width - .5) * 24 + "px");
+      text.style.setProperty("--y", ((event.clientY - rect.top) / rect.height - .5) * 24 + "px");
+    });
+    hero.addEventListener("pointerleave", resetPosition);
+    canMove.addEventListener("change", resetPosition);
+    reducedMotion.addEventListener("change", resetPosition);
+
+    nameButton.addEventListener("click", () => {
+      intro.hidden = !intro.hidden;
+      nameButton.setAttribute("aria-expanded", String(!intro.hidden));
+    });
   </script>
 </body>
 </html>
